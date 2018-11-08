@@ -27,6 +27,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -116,18 +120,14 @@ public class TestHALogWriter extends TestCase2 {
      * @param f
      *            A file or directory.
      */
-    private void recursiveDelete(final File f) {
+    private void recursiveDelete(final File f) throws IOException {
 
         if (f.isDirectory()) {
-
-            final File[] children = f.listFiles();
-
-            for (int i = 0; i < children.length; i++) {
-
-                recursiveDelete(children[i]);
-
-            }
-
+            Path rootPath = f.toPath();
+            Files.walk(rootPath)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
         }
 
         if (log.isInfoEnabled())
