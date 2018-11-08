@@ -333,8 +333,9 @@ public class HALogReader implements IHALogReader {
 
 		final IHAWriteMessage msg;
 		try {
-
-			msg = (IHAWriteMessage) objinstr.readObject();
+			synchronized (objinstr) {
+				msg = (IHAWriteMessage) objinstr.readObject();
+			}
 
 		} catch (ClassNotFoundException e) {
 
