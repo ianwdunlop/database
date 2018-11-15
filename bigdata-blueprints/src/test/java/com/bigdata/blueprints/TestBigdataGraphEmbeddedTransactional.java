@@ -127,8 +127,8 @@ public class TestBigdataGraphEmbeddedTransactional extends AbstractTestBigdataGr
                     v1.setProperty("key2", 10);
                     v2.setProperty("key2", 20);
 
-                    assertEquals(10, v1.getProperty("key2"));
-                    assertEquals(20, v2.getProperty("key2"));
+                    assertEquals(10, Integer.parseInt(v1.getProperty("key2")));
+                    assertEquals(20, Integer.parseInt(v2.getProperty("key2")));
                 }
 
             }
