@@ -40,6 +40,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -791,11 +794,18 @@ public class DataLoader {
 			 * Immediately rename failures. They are failed regardless of
 			 * whether we commit.
 			 */
-			if (durableQueues && !file.renameTo(new File(file.getPath() + ".fail"))) {
-			
-				log.error("File rename failed: file=" + file + " (fail)");
-				
+			try {
+				if (durableQueues) {
+					Files.move(Paths.get(file.getPath()), Paths.get(file.getPath() + ".fail"));
+				}
+			} catch (IOException e) {
+				log.error("File rename failed: file=" + file + " " + e.toString());
 			}
+			//if (durableQueues && !file.renameTo(new File(file.getPath() + ".fail"))) {
+			//
+			//	log.error("File rename failed: file=" + file + " (fail)");
+			//
+			//}
 			
 		}
 
@@ -1391,6 +1401,8 @@ public class DataLoader {
             } finally {
 
             	// Note: Must close() before renameTo().
+				// TODO This reader runs after a failure case which was breaking the tests.
+				// So had to add a reader.close() in loadData4_ParserErrors_Not_Trapped
                 reader.close();
 
             }
@@ -1593,7 +1605,6 @@ public class DataLoader {
 				if (source instanceof Reader) {
 
 					loader.loadRdf((Reader) source, baseURI, rdfFormat, defaultGraph, parserOptions);
-
 				} else if (source instanceof InputStream) {
 
 					loader.loadRdf((InputStream) source, baseURI, rdfFormat, defaultGraph, parserOptions);
@@ -1606,7 +1617,6 @@ public class DataLoader {
 			} finally {
 
 				if (fileIfSourceIsFile != null) {
-				
 					/*
 					 * Record output in support of durable queues pattern.
 					 * 
@@ -1615,11 +1625,21 @@ public class DataLoader {
 					 */
 					
 					if (ok) {
-					
+						if (source instanceof Reader) {
+							((Reader) source).close();
+						} else if (source instanceof InputStream) {
+							((InputStream) source).close();
+						}
 						stats.didGood(fileIfSourceIsFile);
 						
 					} else {
-						
+						// For some reason the reader is not closed before
+						// trying this move in a failure case
+						if (source instanceof Reader) {
+						((Reader) source).close();
+						} else if (source instanceof InputStream) {
+							((InputStream) source).close();
+						}
 						stats.didFail(fileIfSourceIsFile);
 						
 					}
