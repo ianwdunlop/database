@@ -403,8 +403,9 @@ public class PrefixDeclProcessor {
 						}
 
 						// String < and >
-						final String uri = decls[2].substring(1,
-								decls[2].length() - 1);
+                        String strippedURI = decls[2].replaceAll("(\\r|\\n)", "");
+						final String uri = strippedURI.substring(1,
+								strippedURI.length() - 1);
 						
 						log.warn("Configured prefix: PREFIX " + prefix + ": " + uri);
 						
