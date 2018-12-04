@@ -123,7 +123,7 @@ public class TestCSVReader extends TestCase2 {
         assertSameValues(newMap(headers, new Object[] { "Bryan Thompson",
                 new Long(12), "SAIC",
                 new SimpleDateFormat("MM/dd/yy").parse("4/30/2002"),
-                "$12.02"
+                12.02
         }), r.next() );
 
         assertEquals(2,r.lineNo());
@@ -138,7 +138,7 @@ public class TestCSVReader extends TestCase2 {
                 "Bryan Thompson",
                 new Long(12), "SYSTAP",
                 new SimpleDateFormat("MM/dd/yy").parse("4/30/2005"),
-                "$13.03"
+                13.03
         }), r.next() );
 
         assertEquals(3,r.lineNo());
@@ -180,7 +180,7 @@ public class TestCSVReader extends TestCase2 {
         assertSameValues(newMap(headers, new Object[] { "Bryan Thompson",
                 new Long(12), "SAIC",
                 new SimpleDateFormat("MM/dd/yy").parse("4/30/2002"),
-                "$12.02"
+                12.02
         }), r.next() );
 
         assertEquals(1,r.lineNo());
@@ -195,7 +195,7 @@ public class TestCSVReader extends TestCase2 {
                 "Bryan Thompson",
                 new Long(12), "SYSTAP",
                 new SimpleDateFormat("MM/dd/yy").parse("4/30/2005"),
-                "$13.03"
+                13.03
         }), r.next() );
 
         assertEquals(2,r.lineNo());
